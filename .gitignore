@@ -1,0 +1,6 @@
+# 各机私有：密钥与本机路径，绝不入库
+local/*
+!local/*.example
+
+# 沙箱 / 上传目录
+.uploads/
