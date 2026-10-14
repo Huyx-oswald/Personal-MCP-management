@@ -36,7 +36,7 @@
 
 变量来自 `local/secrets.json` 与 `local/machine.json`（后者同名键覆盖前者）。`config/` 下的普通 `*.json` 不含占位符，原样写回。
 
-> 当前 `config/` 是空骨架（`{}`）。把本机 `.trae-cn/User` 下真实的 `mcp.json` / `skill-config.json` / `plugin-config.json` / `settings.json` 搬进来，并按上面约定把密钥、绝对路径改成 `${变量名}`。空文件运行 `sync.ps1` 会被跳过，不会清空本机现有配置。
+> `skill-config.json`、`plugin-config.json` 已是真实配置（纯文本、无密钥，原样同步）。`mcp.template.json`、`settings.json` 仍是空骨架，待补齐本机真实内容，并把密钥/绝对路径改成 `${变量名}`。空文件运行 `sync.ps1` 会被跳过，不会清空本机现有配置。
 
 ## 新机 bootstrap（每台做一次）
 
