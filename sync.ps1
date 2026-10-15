@@ -63,7 +63,11 @@ foreach ($f in Get-ChildItem (Join-Path $ConfigDir '*.template.json') -ErrorActi
   $text    = Get-Content $f.FullName -Raw
   $outName = $f.Name -replace '\.template\.json$', '.json'
 
-  foreach ($k in $vars.Keys) { $text = $text.Replace('${' + $k + '}', $vars[$k]) }
+  # 值里的反斜杠要先转义再塞进 JSON 文本，否则 Windows 路径会写出非法 JSON
+  foreach ($k in $vars.Keys) {
+    $value = $vars[$k].Replace('\', '\\')   # ponytail: 只转义反斜杠；值里若含双引号需另想办法
+    $text  = $text.Replace('${' + $k + '}', $value)
+  }
   $missing = [regex]::Matches($text, '\$\{[A-Za-z0-9_]+\}') | ForEach-Object { $_.Value } | Sort-Object -Unique
   if ($missing) { Write-Warning "$($f.Name) 仍有未替换占位符: $($missing -join ', ')" }
 

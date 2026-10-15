@@ -1,5 +1,6 @@
 {
   "TRAE_CONFIG_DIR": "C:\\Users\\<你的用户名>\\.trae-cn\\User",
-  "SAP_VENV": "C:\\dev\\mcp-sap-gui\\.venv",
-  "MEMORY_PATH": "C:\\Users\\<你的用户名>\\.trae-cn\\memory\\memory.jsonl"
+  "SAP_VENV": "C:\\Users\\<你的用户名>\\Documents\\GitHub\\mcp-sap-gui\\.venv",
+  "SAP_ENV_FILE": "C:\\Users\\<你的用户名>\\Documents\\GitHub\\mcp-sap-gui\\.env",
+  "MEMORY_FILE_PATH": "C:\\Users\\<你的用户名>\\Desktop\\trae项目\\traememory\\memory.jsonl"
 }

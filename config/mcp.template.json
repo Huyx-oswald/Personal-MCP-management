@@ -1,1 +1,58 @@
-{}
+{
+  "mcpServers": {
+    "GitHub": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PAT}" },
+      "fromGalleryId": "modelcontextprotocol.servers_github"
+    },
+    "windows-cli": {
+      "command": "npx",
+      "args": ["-y", "@simonb97/server-win-cli"],
+      "env": {},
+      "fromGalleryId": "byted-mcp-volcengine.windows-cli"
+    },
+    "Pandoc": {
+      "command": "uvx",
+      "args": ["mcp-pandoc"],
+      "env": {},
+      "fromGalleryId": "byted-mcp-volcengine.pandoc"
+    },
+    "歌者PPT": {
+      "command": "npx",
+      "args": ["-y", "gezhe-mcp-server@latest"],
+      "env": { "API_KEY": "https://mcp.gezhe.com/mcp?API_KEY=${GEZHE_API_KEY}" },
+      "fromGalleryId": "byted-mcp-volcengine.gezhe_ppt_mcp"
+    },
+    "lanyin-rpa": {
+      "url": "http://127.0.0.1:18765/mcp",
+      "description": "蓝印RPA流程自动搭建、语法校验和执行服务"
+    },
+    "mcp-sap-gui": {
+      "command": "${SAP_VENV}\\Scripts\\python.exe",
+      "args": ["-m", "sap_gui_server.server"],
+      "env": { "SAP_ENV_FILE": "${SAP_ENV_FILE}" }
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "Knowledge Graph Memory": {
+      "command": "npx",
+      "args": ["-y", "@itseasy21/mcp-knowledge-graph"],
+      "env": { "MEMORY_FILE_PATH": "${MEMORY_FILE_PATH}" },
+      "fromGalleryId": "byted-mcp-volcengine.knowledge_graph"
+    },
+    "Excel": {
+      "command": "npx",
+      "args": ["--yes", "@negokaz/excel-mcp-server"],
+      "env": { "EXCEL_MCP_PAGING_CELLS_LIMIT": "4000" },
+      "fromGalleryId": "byted-mcp-volcengine.excel"
+    },
+    "markitdown": {
+      "command": "uvx",
+      "args": ["markitdown-mcp"],
+      "fromGalleryId": "byted-mcp-volcengine.markitdown"
+    }
+  }
+}

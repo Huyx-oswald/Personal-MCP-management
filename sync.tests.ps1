@@ -7,7 +7,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $tmp 'config'), (Join-Path 
 Copy-Item (Join-Path $PSScriptRoot 'sync.ps1') $tmp
 
 @'
-{"mcpServers":{"github":{"env":{"TOKEN":"${GITHUB_PAT}"}},"sap":{"path":"${SAP_VENV}"}}}
+{"mcpServers":{"github":{"env":{"TOKEN":"${GITHUB_PAT}"}},"sap":{"path":"${SAP_VENV}\\Scripts\\python.exe"}}}
 '@ | Set-Content (Join-Path $tmp 'config/mcp.template.json') -Encoding utf8
 '{}' | Set-Content (Join-Path $tmp 'config/empty.template.json') -Encoding utf8
 @{ GITHUB_PAT = 'ghp_secret' } | ConvertTo-Json | Set-Content (Join-Path $tmp 'local/secrets.json') -Encoding utf8
@@ -16,10 +16,11 @@ Copy-Item (Join-Path $PSScriptRoot 'sync.ps1') $tmp
 
 & (Join-Path $tmp 'sync.ps1') *> $null
 
-$mcp = Get-Content (Join-Path $tmp 'out/mcp.json') -Raw
-if ($mcp -notmatch 'ghp_secret')                    { throw 'FAIL: GITHUB_PAT 未替换' }
-if ($mcp -notmatch 'C:\\sap-venv')                  { throw 'FAIL: SAP_VENV 未替换' }
-if ($mcp -match '\$\{')                             { throw 'FAIL: 仍有未替换占位符' }
+$out = Join-Path $tmp 'out/mcp.json'
+$o   = Get-Content $out -Raw | ConvertFrom-Json   # 能解析即说明输出是合法 JSON
+if ($o.mcpServers.github.env.TOKEN -ne 'ghp_secret')                  { throw 'FAIL: GITHUB_PAT 未替换' }
+if ($o.mcpServers.sap.path  -ne 'C:\sap-venv\Scripts\python.exe')     { throw 'FAIL: SAP_VENV 未正确拼成 Windows 路径' }
+if ((Get-Content $out -Raw) -match '\$\{')                            { throw 'FAIL: 仍有未替换占位符' }
 if (Test-Path (Join-Path $tmp 'out/empty.json'))    { throw 'FAIL: 空占位模板未被跳过' }
 
 Remove-Item $tmp -Recurse -Force
