@@ -5,8 +5,7 @@ sync.ps1 — 多端 Trae 配置同步（多端统一方案里的"脚本管落地
   1. git pull
   2. 合并读取 local/secrets.json 与 local/machine.json
   3. 把 config/*.template.json 里的 ${占位符} 替换成本机真实值，去掉 .template 写回目标目录
-     （config/ 下的普通 *.json 原样写回）
-  4. config/*.json 有改动时，用 -Push 提交并上传
+  4. config/ 有改动时，用 -Push 提交并上传
 
 用法：
   pwsh ./sync.ps1            # 拉取 + 落地（新机、换机时跑）
@@ -60,20 +59,13 @@ $vars  += Read-FlatJson (Join-Path $LocalDir 'machine.json')
 $target = $vars['TRAE_CONFIG_DIR']
 if (-not $target) { throw 'local/machine.json 缺少 TRAE_CONFIG_DIR（本机 Trae 配置目录的绝对路径）' }
 
-$files  = @(Get-ChildItem (Join-Path $ConfigDir '*.template.json') -ErrorAction SilentlyContinue)
-$files += @(Get-ChildItem (Join-Path $ConfigDir '*.json') -ErrorAction SilentlyContinue |
-            Where-Object { $_.Name -notlike '*.template.json' })
+foreach ($f in Get-ChildItem (Join-Path $ConfigDir '*.template.json') -ErrorAction SilentlyContinue) {
+  $text    = Get-Content $f.FullName -Raw
+  $outName = $f.Name -replace '\.template\.json$', '.json'
 
-foreach ($f in $files) {
-  $isTemplate = $f.Name -like '*.template.json'
-  $text       = Get-Content $f.FullName -Raw
-  $outName    = $f.Name -replace '\.template\.json$', '.json'
-
-  if ($isTemplate) {
-    foreach ($k in $vars.Keys) { $text = $text.Replace('${' + $k + '}', $vars[$k]) }
-    $missing = [regex]::Matches($text, '\$\{[A-Za-z0-9_]+\}') | ForEach-Object { $_.Value } | Sort-Object -Unique
-    if ($missing) { Write-Warning "$($f.Name) 仍有未替换占位符: $($missing -join ', ')" }
-  }
+  foreach ($k in $vars.Keys) { $text = $text.Replace('${' + $k + '}', $vars[$k]) }
+  $missing = [regex]::Matches($text, '\$\{[A-Za-z0-9_]+\}') | ForEach-Object { $_.Value } | Sort-Object -Unique
+  if ($missing) { Write-Warning "$($f.Name) 仍有未替换占位符: $($missing -join ', ')" }
 
   # 空的骨架文件不写回，避免把本机现有配置清空
   if ([string]::IsNullOrWhiteSpace($text) -or $text.Trim() -eq '{}') {
