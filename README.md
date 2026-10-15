@@ -42,7 +42,7 @@
 | --- | --- | --- |
 | `GITHUB_PAT` | `local/secrets.json` | `GitHub` server 的 `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `GEZHE_API_KEY` | `local/secrets.json` | `歌者PPT` server 的 `API_KEY`（拼进 URL） |
-| `TRAE_CONFIG_DIR` | `local/machine.json` | 本机 Trae 配置目录，即 `mcp.json` 的写回目标 |
+| `TRAE_CONFIG_DIR` | `local/machine.json` | 本机 Trae 配置目录，即 `mcp.json` 的写回目标。实测路径：`%APPDATA%\Trae CN\User` |
 | `SAP_VENV` | `local/machine.json` | `mcp-sap-gui` 的 venv 目录 |
 | `SAP_ENV_FILE` | `local/machine.json` | `mcp-sap-gui` 的 `.env` 文件 |
 | `MEMORY_FILE_PATH` | `local/machine.json` | `Knowledge Graph Memory` 的 `.jsonl` 数据文件 |
@@ -57,14 +57,14 @@
 2. `git clone` 本仓库；把 `local/*.example` 复制成 `secrets.json`、`machine.json`，填真实值。
 3. 装本地依赖（下方「各机必装」）。
 4. 登录**同一个 Trae 账号**，官方插件 / 市场技能自动到账。
-5. `pwsh ./sync.ps1` 落地。
-   - 若本机 Trae 的 `mcp.json` 没有稳定可写路径：把 `machine.json` 里的 `TRAE_CONFIG_DIR` 临时指向一个空目录跑一遍，再打开「设置 > MCP > 手动添加 > 原始配置(JSON)」，把生成的内容粘进去。
+5. `pwsh ./sync.ps1` 落地（写回 `%APPDATA%\Trae CN\User\mcp.json`）。
+   - 若以后 Trae 换了存放位置：把 `machine.json` 的 `TRAE_CONFIG_DIR` 改成实际目录；实在找不到可写路径时，就把它临时指向一个空目录跑一遍，再打开「设置 > MCP > 手动添加 > 原始配置(JSON)」粘贴生成的内容。
 
 ## 日常用法
 
 | 场景 | 命令 |
 | --- | --- |
-| 改了 `mcp.template.json`，上传 | `pwsh ./sync.ps1 -Push` |
+| 在本机改了 `mcp.json`（在 Trae 设置里改的），回填模板并上传 | `pwsh ./sync.ps1 -Push` |
 | 换到另一台机器落地 | `pwsh ./sync.ps1` |
 | 只想看会写哪些文件 | `pwsh ./sync.ps1 -WhatIf` |
 | 验证脚本逻辑没坏 | `pwsh ./sync.tests.ps1` |
